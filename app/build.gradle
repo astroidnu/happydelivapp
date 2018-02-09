@@ -1,11 +1,13 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
 
 android {
     compileSdkVersion 26
+    buildToolsVersion '27.0.3'
+
     defaultConfig {
         applicationId "com.happydeliv.happydelivapp"
         minSdkVersion 16
@@ -13,7 +15,14 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "BASE_URL", "\"http://happydeliv.com/api/\""
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+
     buildTypes {
         release {
             minifyEnabled false
@@ -22,12 +31,96 @@ android {
     }
 }
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+kapt {
+    generateStubs = true
 }
+
+
+dependencies {
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //Testing Dependencies
+    testImplementation 'junit:junit:4.12'
+
+    // Android runner and rules support
+    androidTestImplementation(androidRunner) {
+        exclude module: 'support-annotations'
+    }
+    androidTestImplementation(androidRules) {
+        exclude module: 'support-annotations'
+    }
+
+    // Espresso support
+    androidTestImplementation(espressoDependencies.espressoCore) {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+
+    // add this for intent mocking support
+    androidTestImplementation(espressoDependencies.espressoIntents) {
+        exclude module: 'support-annotations'
+    }
+
+    // add this for webview testing support
+    androidTestImplementation espressoDependencies.espressoWeb
+    androidTestImplementation mockito
+    testImplementation mockito
+    testImplementation "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
+    testImplementation 'com.squareup.okhttp3:mockwebserver:3.9.1'
+
+    //Kotlin Dependencies Kapt
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    //aac
+    // alternatively, just ViewModel
+    implementation "android.arch.lifecycle:runtime:1.1.0"
+    implementation "android.arch.lifecycle:extensions:1.1.0"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.0"
+
+    //Support Dependencies
+    implementation supportDependencies.appcompatv7
+    implementation supportDependencies.design
+    implementation supportDependencies.supportv4
+    implementation supportDependencies.recycleview
+    implementation supportDependencies.cardview
+    implementation supportDependencies.contraintLayout
+    implementation supportDependencies.multidex
+
+    //RxJava 2
+    implementation rxDependencies.rxJava
+    implementation rxDependencies.rxAndroid
+
+    //Retrofit Dependencies
+    implementation retrofitDependencies.retrofit
+    implementation retrofitDependencies.converterGson
+    implementation retrofitDependencies.rxAdapterJava
+
+    //Okhttp Dependencies
+    implementation okhttpDependencies.okhttp
+    implementation okhttpDependencies.loggingInterceptor
+
+    //Dagger Dependencies
+    implementation daggerDependencies.dagger
+    implementation daggerDependencies.daggerAndroidSupport
+    kapt daggerDependencies.daggerCompiler
+    kapt daggerDependencies.daggerAndroidProcessor
+
+
+    //Bottom Bar
+    implementation bottomBar
+
+    //PinView
+    implementation pinView
+
+    //Circular Image
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+
+    implementation 'com.google.android.gms:play-services-maps:11.8.0'
+    implementation 'com.google.android.gms:play-services-location:11.8.0'
+
+    //Firebase
+    compile 'com.google.firebase:firebase-core:11.8.0'
+
+}
+
+apply plugin: 'com.google.gms.google-services'

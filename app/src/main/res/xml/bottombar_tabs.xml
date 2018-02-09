@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/navigation_item_home"
+        icon="@drawable/ic_bottom_home"
+        title="Home" />
+    <tab
+        id="@+id/navigation_item_history"
+        icon="@drawable/ic_bottom_history"
+        title="History" />
+    <tab
+        id="@+id/navigation_item_my_account"
+        icon="@drawable/ic_bottom_account"
+        title="My Account" />
+</tabs>

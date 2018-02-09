@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/pb_otp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+        <LinearLayout
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_logo"/>
+            <LinearLayout
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="We have sent a verification code to your number. Please enter below"/>
+                <com.chaos.view.PinView
+                    android:layout_margin="16dp"
+                    android:gravity="center"
+                    android:id="@+id/pin_otp"
+                    android:layout_gravity="center"
+                    style="@style/PinWidget.PinView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:textSize="14sp"
+                    android:cursorVisible="true"
+                    app:cursorWidth="1dp"
+                    app:lineColor="@color/colorPrimary"
+                    app:itemCount="6"
+                    app:itemWidth="40dp"
+                    app:viewType="rectangle" />
+            </LinearLayout>
+            <Button
+                android:id="@+id/btn_otp_submit"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif"
+                android:layout_marginTop="32dp"
+                android:textColor="@color/colorWhite"
+                android:background="@color/colorPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Submit"/>
+            <TextView
+                android:id="@+id/tv_otp_resend"
+                android:fontFamily="sans-serif"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Didn't receive the verification code ? Resend code"/>
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>
