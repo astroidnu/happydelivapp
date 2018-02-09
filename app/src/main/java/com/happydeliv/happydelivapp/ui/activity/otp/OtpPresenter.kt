@@ -37,25 +37,28 @@ class OtpPresenter @Inject constructor(private val networkService: NetworkServic
         data.put("phone", mLoginSession.getPhoneNumber())
         data.put("otp", otp)
         view?.showLoading()
-        mNetworkService.verifyOtp(mGson.toJson(data))
-                .subscribeOn(scheduler.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    result ->
-                    view?.hideLoading()
-                    if(result.resultCode == 1){
-                        mLoginSession.saveToken(result.data.token)
-                        mLoginSession.saveEmail(result.data.email)
-                        mLoginSession.saveName(result.data.name)
-                        view?.navigateToHome()
-                    }else{
-                        view?.showError(result.resultMessage)
-                    }
-                },{
-                    _ ->
-                    view?.hideLoading()
-                    view?.showError("Please Try again")
-                })
+        disposable.add(
+                mNetworkService.verifyOtp(mGson.toJson(data))
+                        .subscribeOn(scheduler.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            result ->
+                            view?.hideLoading()
+                            if(result.resultCode == 1){
+                                mLoginSession.saveToken(result.data.token)
+                                mLoginSession.saveEmail(result.data.email)
+                                mLoginSession.saveName(result.data.name)
+                                mLoginSession.savePhoneNumber(result.data.phone)
+                                view?.navigateToHome()
+                            }else{
+                                view?.showError(result.resultMessage)
+                            }
+                        },{
+                            error ->
+                            view?.hideLoading()
+                            view?.showError(error.message.toString())
+                        })
+        )
     }
 
     override fun resendOtp() {

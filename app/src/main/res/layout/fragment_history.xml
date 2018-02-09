@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ProgressBar
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pb_history"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_history"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_history_no_package"
+        android:layout_margin="16dp"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tidak ada riwayat pelacakan paket"/>
+    </LinearLayout>
+</RelativeLayout>

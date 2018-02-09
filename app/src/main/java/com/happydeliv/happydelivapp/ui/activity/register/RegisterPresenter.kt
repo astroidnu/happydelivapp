@@ -39,23 +39,25 @@ class RegisterPresenter @Inject constructor(private val networkService: NetworkS
         data.put("phone", noHp)
         data.put("email",email)
         data.put("password",password)
-        mNetworkService.registration(mGson.toJson(data))
-                .subscribeOn(scheduler.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe ({
-                    result ->
-                    view?.hideLoading()
-                    if(result.resultCode == 1){
-                        mLoginSession.savePhoneNumber(noHp)
-                        view?.navigateToOtpPage()
-                    }else{
-                        view?.showError(result.resultMessage)
-                    }
-                },{
-                    _ ->
-                    view?.hideLoading()
-                    view?.showError("Server bermasalah, Silahkan coba kembali")
-                })
+        disposable.add(
+                mNetworkService.registration(mGson.toJson(data))
+                        .subscribeOn(scheduler.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe ({
+                            result ->
+                            view?.hideLoading()
+                            if(result.resultCode == 1){
+                                mLoginSession.savePhoneNumber(noHp)
+                                view?.navigateToOtpPage()
+                            }else{
+                                view?.showError(result.resultMessage)
+                            }
+                        },{
+                            _ ->
+                            view?.hideLoading()
+                            view?.showError("Server bermasalah, Silahkan coba kembali")
+                        })
+        )
     }
 
 }

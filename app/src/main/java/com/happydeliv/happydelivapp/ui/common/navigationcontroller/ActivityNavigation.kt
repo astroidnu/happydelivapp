@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import com.happydeliv.happydelivapp.ui.activity.addtracking.AddTrackingActivity
+import com.happydeliv.happydelivapp.ui.activity.detailpackage.DetailPackageActivity
 import com.happydeliv.happydelivapp.ui.activity.home.HomeActivity
 import com.happydeliv.happydelivapp.ui.activity.login.LoginActivity
 import com.happydeliv.happydelivapp.ui.activity.otp.OtpActivity
@@ -18,6 +19,15 @@ import javax.inject.Inject
  */
 
 class ActivityNavigation @Inject constructor(val activity:AppCompatActivity){
+
+    /**
+     * Navigate To detail page
+     * */
+
+    fun navigateToDetailPage(){
+        val intentDetailPackage = newIntent(activity, DetailPackageActivity::class.java)
+        activity.startActivity(intentDetailPackage)
+    }
     /**
      * Navigate To Otp Page
      * */

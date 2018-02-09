@@ -3,7 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pb_in_progress"
+        android:layout_centerInParent="true"/>
+    <android.support.v7.widget.RecyclerView
+        android:visibility="gone"
+        android:id="@+id/rv_in_progress_package"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_in_progress_no_package"
         android:layout_margin="16dp"
         android:orientation="vertical"
         android:layout_centerInParent="true"
