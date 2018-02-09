@@ -57,13 +57,13 @@ class InProgressFragment : BaseFragment(), InProgressContract.View{
     }
 
     override fun hideEmptyLayout() {
-        ll_in_progress_no_package?.visibility = View.GONE
-        rv_in_progress_package?.visibility = View.VISIBLE
+        ll_in_progress_no_package.visibility = View.GONE
+        rv_in_progress_package.visibility = View.VISIBLE
     }
 
     override fun showEmptyLayout() {
-        ll_in_progress_no_package?.visibility = View.VISIBLE
-        rv_in_progress_package?.visibility = View.GONE
+        ll_in_progress_no_package.visibility = View.VISIBLE
+        rv_in_progress_package.visibility = View.GONE
     }
 
     override fun showError(content: String) {
@@ -77,6 +77,11 @@ class InProgressFragment : BaseFragment(), InProgressContract.View{
 
     override fun showLoading() {
         pb_in_progress?.visibility = View.VISIBLE
+    }
+
+    override fun onStop() {
+        mInProgressPresenter.detachView()
+        super.onStop()
     }
 
 

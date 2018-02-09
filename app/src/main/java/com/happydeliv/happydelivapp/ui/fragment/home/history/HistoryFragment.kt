@@ -72,5 +72,10 @@ class HistoryFragment : BaseFragment(), HistoryContract.View{
         pb_history?.visibility = View.VISIBLE
     }
 
+    override fun onStop() {
+        mHistoryPresenter.detachView()
+        super.onStop()
+    }
+
 
 }

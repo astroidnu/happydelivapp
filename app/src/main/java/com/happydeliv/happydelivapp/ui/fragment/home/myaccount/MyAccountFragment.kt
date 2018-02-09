@@ -47,4 +47,9 @@ class MyAccountFragment : BaseFragment(), MyAccountContract.View{
         (activity as HomeActivity).mActivityNavigation.navigateToLoginPage()
     }
 
+    override fun onStop() {
+        mMyAccountPresenter.detachView()
+        super.onStop()
+    }
+
 }

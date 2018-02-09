@@ -23,6 +23,7 @@ class FragmentNavigation @Inject constructor(val activity: AppCompatActivity, va
 
     fun navigateToInProgressPage() {
         val mInProgressFragment = InProgressFragment()
+
         loadFragment(mInProgressFragment)
     }
 
