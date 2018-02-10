@@ -59,6 +59,10 @@ class HomeActivity : BaseActivity(), HasSupportFragmentInjector, HomeContract.Vi
         mBtnAddPackage.setOnClickListener {
             mActivityNavigation.navigateToAddTrackingPage()
         }
+
+        imgbtn_add_package.setOnClickListener {
+            mActivityNavigation.navigateToAddTrackingPage()
+        }
     }
     override fun setupBottomNavigation() {
         //Setup Default Bottom nav index selected
@@ -86,5 +90,13 @@ class HomeActivity : BaseActivity(), HasSupportFragmentInjector, HomeContract.Vi
         return mFragmentDispatchingAndroidInjector
     }
 
+    override fun onBackPressed() {
+        var mOpenNavigationId = mBottomNavDashboard.currentTabId
+        if (mOpenNavigationId != R.id.navigation_item_home) {
+            mBottomNavDashboard.selectTabWithId(R.id.navigation_item_home)
+        } else {
+            this.finishAffinity()
+        }
+    }
 
 }

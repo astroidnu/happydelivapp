@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.happydeliv.happydelivapp.R
 import com.happydeliv.happydelivapp.ui.activity.home.HomeActivity
 import com.happydeliv.happydelivapp.ui.common.BaseFragment
@@ -32,7 +33,6 @@ class HistoryFragment : BaseFragment(), HistoryContract.View{
         return R.layout.fragment_history
     }
 
-
     override fun onLoadFragment(saveInstance: Bundle?) {
         (activity as HomeActivity).hideBtnAddPackage()
         mHistoryPresenter.attachView(this)
@@ -43,11 +43,13 @@ class HistoryFragment : BaseFragment(), HistoryContract.View{
         mRvHistory?.setUp(data,R.layout.item_package,{
             tv_package_expedition_name.text = it.name
             tv_package_resi_no.text ="Resi no : " +  it.resi_number
-            tv_package_status.text = it.status
+            tv_package_status.text = "Sudah sampai pada : " + it.deliveredAt
             tv_package_track_id.text = "Track id : " + it.track_id
-        },{
-            (activity as HomeActivity).mActivityNavigation.navigateToDetailPage()
-        },mLinearLayoutManager)
+            Glide.with(this)
+                    .load(it.photoProfile)
+                    .into(iv_expedition_logo)
+
+        },{},mLinearLayoutManager)
     }
 
     override fun hideEmptyLayout() {

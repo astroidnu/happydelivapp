@@ -11,5 +11,7 @@ data class PackageVo(
         @SerializedName("name") val name :String,
         @SerializedName("resi_number") val resi_number :String,
         @SerializedName("track_id") val track_id :String,
-        @SerializedName("status") val status :String
+        @SerializedName("status") val status :String,
+        @SerializedName("delivered_at") val deliveredAt :String,
+        @SerializedName("profile_photo") val photoProfile :String
 )

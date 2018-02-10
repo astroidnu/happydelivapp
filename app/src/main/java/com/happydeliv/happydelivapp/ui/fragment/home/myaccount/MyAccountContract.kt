@@ -11,6 +11,7 @@ class MyAccountContract{
     interface View : BaseView {
         fun setupContent(email :String, phoneNo :String)
         fun navigateToLoginPage()
+        fun setupUIListener()
     }
 
     interface UserActionListener {

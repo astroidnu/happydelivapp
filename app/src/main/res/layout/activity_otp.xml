@@ -49,8 +49,7 @@
                     android:cursorVisible="true"
                     app:cursorWidth="1dp"
                     app:lineColor="@color/colorPrimary"
-                    app:itemCount="6"
-                    app:itemWidth="40dp"
+                    app:itemCount="4"
                     app:viewType="rectangle" />
             </LinearLayout>
             <Button

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.happydeliv.happydelivapp.R
 import com.happydeliv.happydelivapp.ui.activity.home.HomeActivity
 import com.happydeliv.happydelivapp.ui.common.BaseFragment
@@ -36,8 +37,13 @@ class InProgressFragment : BaseFragment(), InProgressContract.View{
         mInProgressPresenter.attachView(this)
         (activity as HomeActivity).showBtnAddPackage()
         setupUIListener()
-        mInProgressPresenter.getTrackingList()
     }
+
+    override fun onResume() {
+        mInProgressPresenter.getTrackingList()
+        super.onResume()
+    }
+
 
     override fun setupUIListener() {
         btn_add_tracking.setOnClickListener {
@@ -51,8 +57,21 @@ class InProgressFragment : BaseFragment(), InProgressContract.View{
             tv_package_resi_no.text ="Resi no : " +  it.resi_number
             tv_package_status.text = it.status
             tv_package_track_id.text = "Track id : " + it.track_id
+
+            if(it.status.trim().toLowerCase() == "pending"){
+                view_package_color.setBackgroundColor(resources.getColor(R.color.colorDarkOrange))
+            }else{
+                view_package_color.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+            }
+
+            Glide.with(this)
+                    .load(it.photoProfile)
+                    .into(iv_expedition_logo)
         },{
-            (activity as HomeActivity).mActivityNavigation.navigateToDetailPage()
+            if(it.status.trim().toLowerCase() != "pending"){
+                (activity as HomeActivity).mActivityNavigation.navigateToDetailPage()
+            }
+
         },mLinearLayoutManager)
     }
 

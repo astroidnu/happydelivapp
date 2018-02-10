@@ -14,6 +14,7 @@ import javax.inject.Inject
  * SCO Project
  */
 class MyAccountFragment : BaseFragment(), MyAccountContract.View{
+
     @Inject
     lateinit var mMyAccountPresenter : MyAccountPresenter
 
@@ -35,7 +36,14 @@ class MyAccountFragment : BaseFragment(), MyAccountContract.View{
     override fun onLoadFragment(saveInstance: Bundle?) {
         (activity as HomeActivity).hideBtnAddPackage()
         mMyAccountPresenter.attachView(this)
+        setupUIListener()
         setupContent(mLoginSession.getEmail(), mLoginSession.getPhoneNumber())
+    }
+
+    override fun setupUIListener() {
+        btn_sign_out.setOnClickListener {
+            mMyAccountPresenter.logout()
+        }
     }
 
     override fun setupContent(email: String, phoneNo: String) {
