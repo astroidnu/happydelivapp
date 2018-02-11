@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
@@ -20,7 +21,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.gson.Gson
 import com.happydeliv.happydelivapp.R
+import com.happydeliv.happydelivapp.utils.FirebaseDB
 import com.scoproject.newsapp.ui.common.BaseActivity
 import com.tedpark.tedpermission.rx2.TedRx2Permission
 import kotlinx.android.synthetic.main.activity_detail_package.*
@@ -39,6 +44,9 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
     @Inject
     lateinit var mDetailPackagePresenter : DetailPackagePresenter
 
+    @Inject
+    lateinit var mFirebaseDB : FirebaseDB
+
 
     var mGoogleApiClient: GoogleApiClient? = null
     var mLocationRequest: LocationRequest? = null
@@ -46,6 +54,8 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
     var mapFrag: SupportMapFragment? = null
     var latLng : LatLng? = null
     var currLocationMarker : Marker? = null
+    lateinit var mDriverCurrLati :String
+    lateinit var mDriverCurrLongi :String
 
     override fun onActivityReady(savedInstanceState: Bundle?) {
         mDetailPackagePresenter.attachView(this)
@@ -54,6 +64,26 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
         if (bundle != null) {
             val mTrackId = bundle.getString("data")
             mDetailPackagePresenter.getPackageDetail(mTrackId)
+//            mFirebaseDB.gettingCourierLastLocation(mTrackId, object : FirebaseDB.GetFireBaseCallBack{
+//                override fun onSuccess(dataSnapshot: DataSnapshot) {
+//                    dataSnapshot.children.forEach {
+//                        Log.d(javaClass.name,dataSnapshot.toString())
+////                        mDriverCurrLongi = it.child("driverCurrentLong").value.toString()
+////                        mDriverCurrLati = it.child("driverCurrentLat").value.toString()
+//                    }
+////                    latLng = LatLng(mDriverCurrLati.toDouble(), mDriverCurrLongi.toDouble())
+////                    val markerOptions = MarkerOptions()
+////                    markerOptions.position(latLng!!)
+////                    markerOptions.title("Current Position")
+////                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+////                    currLocationMarker = mMap!!.addMarker(markerOptions)
+//                }
+//
+//                override fun onError(databaseError: DatabaseError) {
+//                    Log.d(javaClass.name, databaseError.message.toString())
+//                }
+//
+//            })
         }
         TedRx2Permission.with(this)
                 .setPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -134,28 +164,7 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
 
     @SuppressLint("MissingPermission")
     override fun onConnected(p0: Bundle?) {
-//        Toast.makeText(this, "onConnected", Toast.LENGTH_SHORT).show()
-        val mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient)
-        if (mLastLocation != null) {
-            //place marker at current position
-            //mGoogleMap.clear();
-            latLng = LatLng(mLastLocation.latitude, mLastLocation.longitude)
-            val markerOptions = MarkerOptions()
-            markerOptions.position(latLng!!)
-            markerOptions.title("Current Position")
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-            currLocationMarker = mMap!!.addMarker(markerOptions)
-        }
-
-        mLocationRequest = LocationRequest()
-        mLocationRequest?.interval = 5000 //5 seconds
-        mLocationRequest?.fastestInterval = 3000 //3 seconds
-        mLocationRequest?.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-        //mLocationRequest.setSmallestDisplacement(0.1F); //1/10 meter
-        mGoogleApiClient?.let {
-            LocationServices.FusedLocationApi.requestLocationUpdates(it, mLocationRequest, this)
-        }
+//
     }
 
     override fun onConnectionSuspended(p0: Int) {
@@ -165,23 +174,6 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
     }
 
     override fun onLocationChanged(location: Location?) {
-        //mGoogleMap.clear();
-        if (currLocationMarker != null) {
-            currLocationMarker!!.remove()
-        }
-        latLng = LatLng(location!!.latitude, location.longitude)
-        var markerOptions = MarkerOptions()
-        markerOptions.position(latLng!!)
-        markerOptions.title("Current Position")
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
-        currLocationMarker = mMap!!.addMarker(markerOptions)
-
-        //zoom to current position:
-        mMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
-
-        //If you only need one location, unregister the listener
-        //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-
     }
 
 

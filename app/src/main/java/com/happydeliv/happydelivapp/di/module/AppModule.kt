@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.google.gson.Gson
 import com.happydeliv.happydelivapp.session.LoginSession
+import com.happydeliv.happydelivapp.utils.FirebaseDB
 import com.scoproject.newsapp.utils.AppSchedulerProvider
 import dagger.Module
 import dagger.Provides
@@ -35,9 +36,12 @@ class AppModule{
     @Provides
     fun provideLoginSession() =  LoginSession()
 
-
     @Singleton
     @Provides
     fun provideGson() =  Gson()
+
+    @Singleton
+    @Provides
+    fun provideFirebaseDB(context: Context) =  FirebaseDB(context)
 
 }

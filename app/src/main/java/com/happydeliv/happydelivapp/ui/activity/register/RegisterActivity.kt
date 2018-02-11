@@ -38,8 +38,13 @@ class RegisterActivity : BaseActivity(), RegisterContract.View{
         var mEmail = et_register_email.text.toString()
         var mPassword = et_register_password.text.toString()
         var mConfirmPassword = et_register_confirm_password.text.toString()
+        if(mPassword == mConfirmPassword){
+            mRegisterPresenter.register(mFullName,mPhoneNo,mEmail,mPassword)
+        }else{
+            showError("Password dan repassword tidak sama , harap ulangi kembali")
+        }
 
-        mRegisterPresenter.register(mFullName,mPhoneNo,mEmail,mPassword)
+
     }
 
     override fun showLoading() { pb_register.visibility = View.VISIBLE }

@@ -40,7 +40,7 @@ class OtpActivity : BaseActivity(), OtpContract.View{
             mOtpPresenter.submitOtp(otp)
         }
         tv_otp_resend.setOnClickListener {
-            //TODO Add resend function
+            mOtpPresenter.resendOtp()
         }
     }
 

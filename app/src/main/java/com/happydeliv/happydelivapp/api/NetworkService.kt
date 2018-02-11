@@ -25,6 +25,10 @@ interface NetworkService{
     fun verifyOtp(@Field("data") param : String) : Flowable<BaseApiResponse<VerifyOtpVo>>
 
     @FormUrlEncoded
+    @POST("/api/resend_otp")
+    fun resendOtp(@Field("data") param : String) : Flowable<BaseApiResponse<String>>
+
+    @FormUrlEncoded
     @POST("/api/track_package")
     fun addTrackPage(@Field("data") data : String, @Field("user_info") userinfo: String) : Flowable<BaseApiResponse<String>>
 
@@ -35,7 +39,6 @@ interface NetworkService{
     @FormUrlEncoded
     @POST("/api/list_history")
     fun getHistoryList(@Field("user_info") userinfo: String) : Flowable<BaseApiResponse<List<PackageVo>>>
-
 
     @FormUrlEncoded
     @POST("/api/detail_package")

@@ -37,6 +37,9 @@ class OtpPresenter @Inject constructor(private val networkService: NetworkServic
         data.put("phone", mLoginSession.getPhoneNumber())
         data.put("otp", otp)
         view?.showLoading()
+        if(disposable.size() > 0){
+            disposable.clear()
+        }
         disposable.add(
                 mNetworkService.verifyOtp(mGson.toJson(data))
                         .subscribeOn(scheduler.newThread())
@@ -62,7 +65,30 @@ class OtpPresenter @Inject constructor(private val networkService: NetworkServic
     }
 
     override fun resendOtp() {
-        //TODO Add action to resend otp by hitting API
+        view?.showLoading()
+        if(disposable.size() > 0){
+            disposable.clear()
+        }
+        val data = HashMap<String, Any>()
+        data.put("phone", mLoginSession.getPhoneNumber())
+        disposable.add(
+                mNetworkService.verifyOtp(mGson.toJson(data))
+                        .subscribeOn(scheduler.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            result ->
+                            view?.hideLoading()
+                            if(result.resultCode == 1){
+
+                            }else{
+                                view?.showError(result.resultMessage)
+                            }
+                        },{
+                            error ->
+                            view?.hideLoading()
+                            view?.showError(error.message.toString())
+                        })
+        )
     }
 
 }
