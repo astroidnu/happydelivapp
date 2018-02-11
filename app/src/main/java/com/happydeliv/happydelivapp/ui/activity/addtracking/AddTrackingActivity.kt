@@ -42,11 +42,16 @@ class AddTrackingActivity : BaseActivity(), AddTrackingContract.View{
     }
 
     override fun navigateToHome() {
-        this.finish()
+        onBackPressed()
     }
 
     override fun showError(content: String) {
         Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onBackPressed() {
+        mActivityNavigation.navigateToHomePage()
+        super.onBackPressed()
     }
 
 }

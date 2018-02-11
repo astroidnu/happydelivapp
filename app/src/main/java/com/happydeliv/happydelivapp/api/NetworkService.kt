@@ -1,10 +1,7 @@
 package com.happydeliv.happydelivapp.api
 
 import com.happydeliv.happydelivapp.api.response.BaseApiResponse
-import com.happydeliv.happydelivapp.vo.LoginVo
-import com.happydeliv.happydelivapp.vo.PackageVo
-import com.happydeliv.happydelivapp.vo.RegisterVo
-import com.happydeliv.happydelivapp.vo.VerifyOtpVo
+import com.happydeliv.happydelivapp.vo.*
 import io.reactivex.Flowable
 import retrofit2.http.*
 
@@ -38,6 +35,11 @@ interface NetworkService{
     @FormUrlEncoded
     @POST("/api/list_history")
     fun getHistoryList(@Field("user_info") userinfo: String) : Flowable<BaseApiResponse<List<PackageVo>>>
+
+
+    @FormUrlEncoded
+    @POST("/api/detail_package")
+    fun getDetailPackage(@Field("data") data : String,@Field("user_info") userinfo: String) : Flowable<BaseApiResponse<DetailPackageVo>>
 
 
 }

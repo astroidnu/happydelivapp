@@ -14,12 +14,12 @@ class DetailPackageContract{
                          trackingId :String,
                          imageUrl :String,
                          driverName :String,
-                         eta :String,
-                         distance : String,
-                         phoneDriver :String,
-                         chatDriver :String)
+                         phoneDriver :String)
+        fun showLoading()
+        fun hideLoading()
+        fun showError(content :String)
     }
     interface UserActionListener {
-        fun getPackageDetail(packageId : String)
+        fun getPackageDetail(trackId : String)
     }
 }

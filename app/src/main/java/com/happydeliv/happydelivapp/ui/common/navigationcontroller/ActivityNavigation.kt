@@ -24,8 +24,11 @@ class ActivityNavigation @Inject constructor(val activity:AppCompatActivity){
      * Navigate To detail page
      * */
 
-    fun navigateToDetailPage(){
+    fun navigateToDetailPage(trackId :String){
         val intentDetailPackage = newIntent(activity, DetailPackageActivity::class.java)
+        intentDetailPackage.apply {
+            putExtra("data", trackId)
+        }
         activity.startActivity(intentDetailPackage)
     }
     /**
