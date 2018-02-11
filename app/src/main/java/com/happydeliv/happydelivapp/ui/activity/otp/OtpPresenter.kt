@@ -72,7 +72,7 @@ class OtpPresenter @Inject constructor(private val networkService: NetworkServic
         val data = HashMap<String, Any>()
         data.put("phone", mLoginSession.getPhoneNumber())
         disposable.add(
-                mNetworkService.verifyOtp(mGson.toJson(data))
+                mNetworkService.resendOtp(mGson.toJson(data))
                         .subscribeOn(scheduler.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
