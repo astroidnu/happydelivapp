@@ -18,6 +18,7 @@
         app:civ_circle_background_color="@color/colorWhite"
         android:src="@drawable/ic_account_detail" />
     <TextView
+        android:id="@+id/tv_profile_name"
         android:fontFamily="sans-serif"
         android:textStyle="bold"
         android:textSize="18sp"

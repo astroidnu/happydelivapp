@@ -49,6 +49,7 @@ class MyAccountFragment : BaseFragment(), MyAccountContract.View{
     override fun setupContent(email: String, phoneNo: String) {
         mProfileEmail.text = email
         mProfilePhone.text = phoneNo
+        tv_profile_name.text = mLoginSession.getName()
     }
 
     override fun navigateToLoginPage() {
