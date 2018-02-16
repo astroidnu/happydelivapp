@@ -60,31 +60,6 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
     override fun onActivityReady(savedInstanceState: Bundle?) {
         mDetailPackagePresenter.attachView(this)
         setupUIListener()
-        val bundle = intent.extras
-        if (bundle != null) {
-            val mTrackId = bundle.getString("data")
-            mDetailPackagePresenter.getPackageDetail(mTrackId)
-//            mFirebaseDB.gettingCourierLastLocation(mTrackId, object : FirebaseDB.GetFireBaseCallBack{
-//                override fun onSuccess(dataSnapshot: DataSnapshot) {
-//                    dataSnapshot.children.forEach {
-//                        Log.d(javaClass.name,dataSnapshot.toString())
-////                        mDriverCurrLongi = it.child("driverCurrentLong").value.toString()
-////                        mDriverCurrLati = it.child("driverCurrentLat").value.toString()
-//                    }
-////                    latLng = LatLng(mDriverCurrLati.toDouble(), mDriverCurrLongi.toDouble())
-////                    val markerOptions = MarkerOptions()
-////                    markerOptions.position(latLng!!)
-////                    markerOptions.title("Current Position")
-////                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-////                    currLocationMarker = mMap!!.addMarker(markerOptions)
-//                }
-//
-//                override fun onError(databaseError: DatabaseError) {
-//                    Log.d(javaClass.name, databaseError.message.toString())
-//                }
-//
-//            })
-        }
         TedRx2Permission.with(this)
                 .setPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
                 .request()
@@ -97,6 +72,39 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
                         //Denied by user
                     }
                 }, { throwable -> throwable.message}, { })
+        val bundle = intent.extras
+        setupGoogleClient()
+        if (bundle != null) {
+            val mTrackId = bundle.getString("data")
+            mDetailPackagePresenter.getPackageDetail(mTrackId)
+            mFirebaseDB.gettingCourierLastLocation(mTrackId, object : FirebaseDB.GetFireBaseCallBack{
+                override fun onSuccess(dataSnapshot: DataSnapshot) {
+                    dataSnapshot.children.forEach {
+                        Log.d(javaClass.name,dataSnapshot.toString())
+                        mDriverCurrLongi = it.child("driverCurrentLong").value.toString()
+                        mDriverCurrLati = it.child("driverCurrentLat").value.toString()
+                        Log.d(javaClass.name, mDriverCurrLongi + "," + mDriverCurrLati)
+
+                        if(mGoogleApiClient != null){
+                            latLng = LatLng(mDriverCurrLati.toDouble(), mDriverCurrLongi.toDouble())
+                            val markerOptions = MarkerOptions()
+                            markerOptions.position(latLng!!)
+                            markerOptions.title("Courier Current Position")
+                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                            currLocationMarker = mMap?.addMarker(markerOptions)
+                            //zoom to current position:
+                            mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
+                        }
+
+                    }
+                }
+
+                override fun onError(databaseError: DatabaseError) {
+                    Log.d(javaClass.name, databaseError.message.toString())
+                }
+
+            })
+        }
     }
 
     override fun getLayoutId(): Int {
@@ -164,7 +172,7 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
 
     @SuppressLint("MissingPermission")
     override fun onConnected(p0: Bundle?) {
-//
+
     }
 
     override fun onConnectionSuspended(p0: Int) {

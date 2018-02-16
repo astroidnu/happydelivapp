@@ -32,7 +32,7 @@ class FirebaseDB(context : Context){
                     .orderByChild("trackId")
                     .equalTo(trackId)
             mDatabaseReference.keepSynced(true)
-            query.addListenerForSingleValueEvent(object : ValueEventListener {
+            query.addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(databaseError: DatabaseError?) {
                     databaseError?.let { callback.onError(it) }
                 }
