@@ -56,6 +56,7 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
     var currLocationMarker : Marker? = null
     lateinit var mDriverCurrLati :String
     lateinit var mDriverCurrLongi :String
+    lateinit var mTrackId : String
 
     override fun onActivityReady(savedInstanceState: Bundle?) {
         mDetailPackagePresenter.attachView(this)
@@ -67,43 +68,14 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
                     if (tedPermissionResult.isGranted) {
                         //Permission Granted
                         mapFrag = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-                        mapFrag!!.getMapAsync(this)
+                        mapFrag?.getMapAsync(this)
                     } else {
                         //Denied by user
                     }
                 }, { throwable -> throwable.message}, { })
         val bundle = intent.extras
-        setupGoogleClient()
         if (bundle != null) {
-            val mTrackId = bundle.getString("data")
-            mDetailPackagePresenter.getPackageDetail(mTrackId)
-            mFirebaseDB.gettingCourierLastLocation(mTrackId, object : FirebaseDB.GetFireBaseCallBack{
-                override fun onSuccess(dataSnapshot: DataSnapshot) {
-                    dataSnapshot.children.forEach {
-                        Log.d(javaClass.name,dataSnapshot.toString())
-                        mDriverCurrLongi = it.child("driverCurrentLong").value.toString()
-                        mDriverCurrLati = it.child("driverCurrentLat").value.toString()
-                        Log.d(javaClass.name, mDriverCurrLongi + "," + mDriverCurrLati)
-
-                        if(mGoogleApiClient != null){
-                            latLng = LatLng(mDriverCurrLati.toDouble(), mDriverCurrLongi.toDouble())
-                            val markerOptions = MarkerOptions()
-                            markerOptions.position(latLng!!)
-                            markerOptions.title("Courier Current Position")
-                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                            currLocationMarker = mMap?.addMarker(markerOptions)
-                            //zoom to current position:
-                            mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
-                        }
-
-                    }
-                }
-
-                override fun onError(databaseError: DatabaseError) {
-                    Log.d(javaClass.name, databaseError.message.toString())
-                }
-
-            })
+            mTrackId = bundle.getString("data")
         }
     }
 
@@ -154,6 +126,36 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
         mMap!!.mapType = GoogleMap.MAP_TYPE_TERRAIN
         mMap!!.isMyLocationEnabled = true
         setupGoogleClient()
+
+        mDetailPackagePresenter.getPackageDetail(mTrackId)
+        mFirebaseDB.gettingCourierLastLocation(mTrackId, object : FirebaseDB.GetFireBaseCallBack{
+            override fun onSuccess(dataSnapshot: DataSnapshot) {
+                dataSnapshot.children.forEach {
+                    Log.d(javaClass.name,dataSnapshot.toString())
+                    mDriverCurrLongi = it.child("driverCurrentLong").value.toString()
+                    mDriverCurrLati = it.child("driverCurrentLat").value.toString()
+                    Log.d(javaClass.name, mDriverCurrLongi + "," + mDriverCurrLati)
+
+                    if(mGoogleApiClient != null){
+                        latLng = LatLng(mDriverCurrLati.toDouble(), mDriverCurrLongi.toDouble())
+                        val markerOptions = MarkerOptions()
+                        markerOptions.position(latLng!!)
+                        markerOptions.title("Courier Current Position")
+                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                        mMap?.clear()
+                        currLocationMarker = mMap?.addMarker(markerOptions)
+                        //zoom to current position:
+                        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
+                    }
+
+                }
+            }
+
+            override fun onError(databaseError: DatabaseError) {
+                Log.d(javaClass.name, databaseError.message.toString())
+            }
+
+        })
     }
 
     private fun setupGoogleClient(){
@@ -184,5 +186,10 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
     override fun onLocationChanged(location: Location?) {
     }
 
+
+    override fun onDestroy() {
+        mFirebaseDB.removeListener()
+        super.onDestroy()
+    }
 
 }

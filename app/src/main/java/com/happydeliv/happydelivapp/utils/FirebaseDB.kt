@@ -1,17 +1,15 @@
 package com.happydeliv.happydelivapp.utils
 
 import android.content.Context
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 /**
  * Created by ibnumuzzakkir on 10/02/18.
  * Android Engineer
  * SCO Project
  */
-class FirebaseDB(context : Context){
+class FirebaseDB(context : Context): ValueEventListener{
+
     companion object {
         /**
          * List of Firebase DB Tables name
@@ -19,6 +17,9 @@ class FirebaseDB(context : Context){
         val TABLE_PACKAGE_IN_PROGRESS = "package_in_progress"
 
     }
+
+    var mQuery : Query? = null
+    lateinit var mCallBack : GetFireBaseCallBack
     internal var mFirebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
 
     /**
@@ -28,26 +29,30 @@ class FirebaseDB(context : Context){
         if (callback != null) {
             val mDatabaseReference = mFirebaseDatabase
                     .getReference(TABLE_PACKAGE_IN_PROGRESS)
-            var query = mDatabaseReference
+            mQuery = mDatabaseReference
                     .orderByChild("trackId")
                     .equalTo(trackId)
+            mCallBack = callback
             mDatabaseReference.keepSynced(true)
-            query.addValueEventListener(object : ValueEventListener {
-                override fun onCancelled(databaseError: DatabaseError?) {
-                    databaseError?.let { callback.onError(it) }
-                }
-
-                override fun onDataChange(dataSnapshot: DataSnapshot?) {
-                    if (dataSnapshot != null) {
-                        callback.onSuccess(dataSnapshot)
-                    }
-                }
-
-            })
+            mQuery?.addValueEventListener(this)
         }
     }
 
+    fun removeListener(){
+        mQuery?.removeEventListener(this)
+    }
 
+    override fun onCancelled(databaseError: DatabaseError?) {
+        databaseError?.let {
+            mCallBack.onError(it)
+        }
+    }
+
+    override fun onDataChange(dataSnapshot: DataSnapshot?) {
+        dataSnapshot?.let {
+            mCallBack.onSuccess(it)
+        }
+    }
 
     /**
      * Interface for callback data from search
@@ -57,5 +62,4 @@ class FirebaseDB(context : Context){
         fun onSuccess(dataSnapshot: DataSnapshot)
         fun onError(databaseError: DatabaseError)
     }
-
 }
