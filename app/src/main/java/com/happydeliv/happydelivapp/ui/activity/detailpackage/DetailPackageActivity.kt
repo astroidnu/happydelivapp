@@ -58,7 +58,7 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
     var currLocationMarker : Marker? = null
     lateinit var mDriverCurrLati :String
     lateinit var mDriverCurrLongi :String
-    lateinit var mTrackId : String
+    var mTrackId : String? = null
 
     override fun onActivityReady(savedInstanceState: Bundle?) {
         mDetailPackagePresenter.attachView(this)
@@ -135,8 +135,8 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
         mMap!!.isMyLocationEnabled = true
         setupGoogleClient()
 
-        mDetailPackagePresenter.getPackageDetail(mTrackId)
-        mFirebaseDB.gettingCourierLastLocation(mTrackId, object : FirebaseDB.GetFireBaseCallBack{
+        mDetailPackagePresenter.getPackageDetail(mTrackId!!)
+        mFirebaseDB.gettingCourierLastLocation(mTrackId!!, object : FirebaseDB.GetFireBaseCallBack{
             override fun onSuccess(dataSnapshot: DataSnapshot) {
                 dataSnapshot.children.forEach {
                     Log.d(javaClass.name,dataSnapshot.toString())
