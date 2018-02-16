@@ -105,7 +105,7 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
                 .load(imageUrl)
                 .into(iv_courier_photo)
         btn_phone_driver.setOnClickListener {
-            val callIntent = Intent(Intent.ACTION_CALL, Uri.parse(phoneDriver))
+            val callIntent = Intent(Intent.ACTION_CALL, Uri.parse("tel:"+phoneDriver))
             startActivity(callIntent)
         }
 
