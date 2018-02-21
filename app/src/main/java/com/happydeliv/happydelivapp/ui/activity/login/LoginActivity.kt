@@ -3,7 +3,9 @@ package com.happydeliv.happydelivapp.ui.activity.login
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import com.google.firebase.iid.FirebaseInstanceId
 import com.happydeliv.happydelivapp.R
+import com.happydeliv.happydelivapp.session.LoginSession
 import com.scoproject.newsapp.ui.common.BaseActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import javax.inject.Inject
@@ -17,6 +19,9 @@ class LoginActivity : BaseActivity(), LoginContract.View{
     @Inject
     lateinit var mLoginPresenter : LoginPresenter
 
+    @Inject
+    lateinit var mLoginSession : LoginSession
+
     private val mEtLoginUserName by lazy { et_login_username }
 
     private val mEtPassword by lazy { et_login_password }
@@ -27,6 +32,10 @@ class LoginActivity : BaseActivity(), LoginContract.View{
 
     override fun onActivityReady(savedInstanceState: Bundle?) {
         mLoginPresenter.attachView(this)
+        val fbToken =  FirebaseInstanceId.getInstance().token
+        fbToken?.let {
+            mLoginSession.saveFirebaseToken(it)
+        }
         mLoginPresenter.checkIsLogin()
         setupUIListener()
     }

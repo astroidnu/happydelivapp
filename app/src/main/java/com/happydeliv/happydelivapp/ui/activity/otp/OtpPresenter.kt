@@ -36,6 +36,7 @@ class OtpPresenter @Inject constructor(private val networkService: NetworkServic
         val data = HashMap<String, Any>()
         data.put("phone", mLoginSession.getPhoneNumber())
         data.put("otp", otp)
+        data.put("token_firebase", mLoginSession.getFirebaseToken())
         view?.showLoading()
         if(disposable.size() > 0){
             disposable.clear()

@@ -17,6 +17,7 @@ class LoginSession {
     private val PREF_NAME = "name"
     private val PREF_PHONE = "phone"
     private val PREF_TOKEN_ID = "token_id"
+    private val PREF_FIREBASE_TOKEN = "firebase_token"
 
     var pref = Pref()
 
@@ -75,6 +76,15 @@ class LoginSession {
 
     fun savePhoneNumber(phone: String) {
         pref._setString(PREF_PHONE, phone)
+    }
+
+
+    fun getFirebaseToken(): String {
+        return pref._getString(PREF_FIREBASE_TOKEN, "")!!
+    }
+
+    fun saveFirebaseToken(phone: String) {
+        pref._setString(PREF_FIREBASE_TOKEN, phone)
     }
 
     fun isInitialized(): Boolean {
