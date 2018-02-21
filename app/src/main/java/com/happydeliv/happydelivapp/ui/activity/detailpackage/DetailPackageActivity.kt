@@ -215,8 +215,8 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
 
         // Declare polyline object and set up color and width
         val options = PolylineOptions()
-        options.color(Color.BLUE)
-        options.width(5f)
+        options.color(R.color.colorDarkOrange)
+        options.width(8f)
 
         // build URL to call API
         val url = getURL(driver, destination)

@@ -69,10 +69,9 @@ class InProgressFragment : BaseFragment(), InProgressContract.View{
                     .into(iv_expedition_logo)
         },{
 
-            (activity as HomeActivity).mActivityNavigation.navigateToDetailPage(it.track_id)
-//            if(it.status.trim().toLowerCase() != "pending"){
-//                (activity as HomeActivity).mActivityNavigation.navigateToDetailPage(it.track_id)
-//            }
+            if(it.status.trim().toLowerCase() != "pending"){
+                (activity as HomeActivity).mActivityNavigation.navigateToDetailPage(it.track_id)
+            }
 
         },mLinearLayoutManager)
     }
