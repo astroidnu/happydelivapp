@@ -45,6 +45,7 @@ class LoginPresenter @Inject constructor(private val networkService: NetworkServ
         }else if(!isValidPassword(password) && !isValidPhoneNo(phoneNo)){
             view?.showError("Invalid Phone No and Password")
         }else{
+            view?.showLoading()
             var data = HashMap<String, Any>()
             data.put("phone",phoneNo)
             data.put("password", password)
@@ -54,13 +55,16 @@ class LoginPresenter @Inject constructor(private val networkService: NetworkServ
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe ({
                                 result ->
+                                view?.hideLoading()
                                 if(result.resultCode == 1){
                                     mLoginSession.savePhoneNumber(phoneNo)
                                     view?.navigateToOtpPage()
                                 }else{
                                     view?.showError(result.resultMessage)
                                 }
-                            },{ _ ->  view?.showError("Login failed, please try again")
+                            },{ _ ->
+                                view?.hideLoading()
+                                view?.showError("Login failed, please try again")
                             })
             )
         }

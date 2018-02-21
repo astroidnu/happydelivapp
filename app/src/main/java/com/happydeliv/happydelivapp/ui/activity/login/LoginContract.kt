@@ -13,6 +13,8 @@ class LoginContract{
         fun showError(content : String)
         fun navigateToOtpPage()
         fun navigateToHomePage()
+        fun showLoading()
+        fun hideLoading()
     }
     interface UserActionListener{
         fun checkIsLogin()

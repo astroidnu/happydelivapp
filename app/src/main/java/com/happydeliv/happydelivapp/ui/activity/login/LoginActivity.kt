@@ -1,6 +1,7 @@
 package com.happydeliv.happydelivapp.ui.activity.login
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import com.happydeliv.happydelivapp.R
 import com.scoproject.newsapp.ui.common.BaseActivity
@@ -13,7 +14,6 @@ import javax.inject.Inject
  * SCO Project
  */
 class LoginActivity : BaseActivity(), LoginContract.View{
-
     @Inject
     lateinit var mLoginPresenter : LoginPresenter
 
@@ -54,6 +54,14 @@ class LoginActivity : BaseActivity(), LoginContract.View{
 
     override fun navigateToHomePage() {
         mActivityNavigation.navigateToHomePage()
+    }
+
+    override fun showLoading() {
+        pb_login.visibility = View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        pb_login.visibility = View.GONE
     }
 
 }
