@@ -118,11 +118,13 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-maps:11.8.0'
     implementation 'com.google.android.gms:play-services-location:11.8.0'
+    implementation 'com.google.android.gms:play-services-location:11.8.0'
 
     //Firebase
     implementation 'com.google.firebase:firebase-core:11.8.0'
     implementation 'com.google.firebase:firebase-database:11.8.0'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
+    implementation 'com.google.firebase:firebase-messaging:11.8.0'
 
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.6.1'
@@ -130,6 +132,12 @@ dependencies {
 
     //Handling Permission
     implementation 'gun0912.ted:tedpermission-rx2:2.1.0'
+
+    // Anko Commons
+    implementation "org.jetbrains.anko:anko-commons:0.10.4"
+
+    //JSON Parser
+    implementation 'com.beust:klaxon:2.1.6'
 
 }
 
