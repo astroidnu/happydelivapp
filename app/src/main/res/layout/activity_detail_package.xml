@@ -104,6 +104,24 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/colorBlack"
                             android:text="Bapak Driver"/>
+                        <TextView
+                            android:visibility="gone"
+                            android:id="@+id/tv_duration"
+                            android:layout_marginTop="4dp"
+                            android:textSize="12sp"
+                            android:fontFamily="sans-serif"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="10 Mins to arrive"/>
+                        <TextView
+                            android:visibility="gone"
+                            android:id="@+id/tv_distance"
+                            android:layout_marginTop="4dp"
+                            android:textSize="12sp"
+                            android:fontFamily="sans-serif"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="10 Km"/>
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout

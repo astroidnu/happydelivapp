@@ -18,8 +18,12 @@ class DetailPackageContract{
         fun showLoading()
         fun hideLoading()
         fun showError(content :String)
+        fun drawDirection(currentLat: Double?, currentLong: Double?, destinationLat: Double?, destinationLong: Double?)
+        fun addMarker(lati :Double, longi :Double, marker :Int, titleMarker : String)
+        fun setContentDurationAndDistance(duration:String, distance:String)
     }
     interface UserActionListener {
         fun getPackageDetail(trackId : String)
+        fun getTrackingPackageFirebase(trackingID : String)
     }
 }

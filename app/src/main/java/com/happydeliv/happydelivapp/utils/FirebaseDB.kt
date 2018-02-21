@@ -54,6 +54,24 @@ class FirebaseDB(context : Context): ValueEventListener{
         }
     }
 
+
+    /**
+     * getting data to firebase
+     * */
+
+    fun gettingTrackingData(trackId :String, callback: GetFireBaseCallBack?) {
+        if (callback != null) {
+            val mDatabaseReference = mFirebaseDatabase
+                    .getReference(TABLE_PACKAGE_IN_PROGRESS)
+            val  mQuery = mDatabaseReference
+                    .orderByChild("trackId")
+                    .equalTo(trackId)
+            mCallBack = callback
+            mDatabaseReference.keepSynced(true)
+            mQuery?.addValueEventListener(this)
+        }
+    }
+
     /**
      * Interface for callback data from search
      */

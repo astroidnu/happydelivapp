@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.happydeliv.happydelivapp.api.NetworkService
 import com.happydeliv.happydelivapp.di.scope.ActivityScope
 import com.happydeliv.happydelivapp.session.LoginSession
+import com.happydeliv.happydelivapp.utils.FirebaseDB
 import com.scoproject.newsapp.ui.common.navigationcontroller.ActivityNavigation
 import com.scoproject.newsapp.utils.AppSchedulerProvider
 import dagger.Module
@@ -27,8 +28,8 @@ class DetailPackageModule{
     @Provides
     @ActivityScope
     internal fun provideDetailPackagePresenter(networkService: NetworkService, compositeDisposable: CompositeDisposable,
-                                               schedulerProvider: AppSchedulerProvider, loginSession: LoginSession, gson: Gson) : DetailPackagePresenter{
-        return DetailPackagePresenter(networkService,compositeDisposable, schedulerProvider, loginSession, gson)
+                                               schedulerProvider: AppSchedulerProvider, loginSession: LoginSession, gson: Gson, firebaseDB: FirebaseDB) : DetailPackagePresenter{
+        return DetailPackagePresenter(networkService,compositeDisposable, schedulerProvider, loginSession, gson, firebaseDB)
     }
 
 

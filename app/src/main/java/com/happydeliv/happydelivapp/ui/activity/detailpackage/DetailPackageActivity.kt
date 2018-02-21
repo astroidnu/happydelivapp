@@ -3,12 +3,17 @@ package com.happydeliv.happydelivapp.ui.activity.detailpackage
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
 import com.bumptech.glide.Glide
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -19,10 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.gson.Gson
@@ -32,6 +34,9 @@ import com.scoproject.newsapp.ui.common.BaseActivity
 import com.tedpark.tedpermission.rx2.TedRx2Permission
 import kotlinx.android.synthetic.main.activity_detail_package.*
 import kotlinx.android.synthetic.main.activity_toolbar.*
+import org.jetbrains.anko.custom.async
+import org.jetbrains.anko.uiThread
+import java.net.URL
 import javax.inject.Inject
 
 /**
@@ -42,7 +47,6 @@ import javax.inject.Inject
 class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
-
     @Inject
     lateinit var mDetailPackagePresenter : DetailPackagePresenter
 
@@ -58,6 +62,8 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
     var currLocationMarker : Marker? = null
     lateinit var mDriverCurrLati :String
     lateinit var mDriverCurrLongi :String
+    var mDestinationLat : String? = null
+    var mDestinationLong : String? = null
     var mTrackId : String? = null
 
     override fun onActivityReady(savedInstanceState: Bundle?) {
@@ -109,6 +115,11 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
             startActivity(callIntent)
         }
 
+        //SMS Action
+        btn_message_driver.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", phoneDriver, null)))
+        }
+
     }
 
     override fun onBackPressed() {
@@ -142,18 +153,18 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
                     Log.d(javaClass.name,dataSnapshot.toString())
                     mDriverCurrLongi = it.child("driverCurrentLong").value.toString()
                     mDriverCurrLati = it.child("driverCurrentLat").value.toString()
+                    mDestinationLat = it.child("destinationCurrentLat").value.toString()
+                    mDestinationLong = it.child("destinationCurrentLong").value.toString()
                     Log.d(javaClass.name, mDriverCurrLongi + "," + mDriverCurrLati)
 
                     if(mGoogleApiClient != null){
-                        latLng = LatLng(mDriverCurrLati.toDouble(), mDriverCurrLongi.toDouble())
-                        val markerOptions = MarkerOptions()
-                        markerOptions.position(latLng!!)
-                        markerOptions.title("Courier Current Position")
-                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                         mMap?.clear()
-                        currLocationMarker = mMap?.addMarker(markerOptions)
+                        latLng = LatLng(mDriverCurrLati.toDouble(), mDriverCurrLongi.toDouble())
+                        addMarker(mDriverCurrLati.toDouble(),mDriverCurrLongi.toDouble(), R.drawable.ic_marker_kurir, "Lokasi Courier")
+                        addMarker(mDestinationLat?.toDouble()!!,mDestinationLong?.toDouble()!!, R.drawable.ic_marker_kurir_tujuan, "Lokasi Tujuan")
                         //zoom to current position:
                         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
+                        drawDirection(mDriverCurrLati.toDouble(),mDriverCurrLongi.toDouble(),mDestinationLat?.toDouble(),mDestinationLong?.toDouble())
                     }
 
                 }
@@ -194,10 +205,139 @@ class DetailPackageActivity : BaseActivity(), DetailPackageContract.View, OnMapR
     override fun onLocationChanged(location: Location?) {
     }
 
+    override fun drawDirection(currentLat: Double?, currentLong: Double?, destinationLat: Double?, destinationLong: Double?) {
+        // declare bounds object to fit whole route in screen
+        val LatLongB = LatLngBounds.Builder()
+
+        // Add markers
+        val driver = LatLng(currentLat!!, currentLong!!)
+        val destination = LatLng(destinationLat!!,destinationLong!!)
+
+        // Declare polyline object and set up color and width
+        val options = PolylineOptions()
+        options.color(Color.BLUE)
+        options.width(5f)
+
+        // build URL to call API
+        val url = getURL(driver, destination)
+
+        async {
+            // Connect to URL, download content and convert into string asynchronously
+            val result = URL(url).readText()
+            uiThread {
+                // When API call is done, create parser and convert into JsonObjec
+                val parser = Parser()
+                val stringBuilder = StringBuilder(result)
+                val json: JsonObject = parser.parse(stringBuilder) as JsonObject
+                // get to the correct element in JsonObject
+                val routes = json.array<JsonObject>("routes")
+                val points = routes!!["legs"]["steps"][0] as JsonArray<JsonObject>
+                // For every element in the JsonArray, decode the polyline string and pass all points to a List
+                val polypts = points.flatMap { decodePoly(it.obj("polyline")?.string("points")!!)  }
+                // Add  points to polyline and bounds
+                options.add(driver)
+                LatLongB.include(driver)
+                for (point in polypts)  {
+                    options.add(point)
+                    LatLongB.include(point)
+                }
+                options.add(destination)
+                LatLongB.include(destination)
+                // build bounds
+                val bounds = LatLongB.build()
+                // add polyline to the map
+                mMap?.addPolyline(options)
+                // show map with route centered
+                mMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
+
+                val legs  = routes!!["legs"][0] as JsonArray<JsonObject>
+                val distanceArr = legs[0]["distance"] as JsonObject
+                val distance = distanceArr["text"]
+                val durationArr = legs[0]["duration"] as JsonObject
+                val duration = durationArr["text"]
+
+                setContentDurationAndDistance(duration.toString(), distance.toString())
+            }
+        }
+    }
+
+    override fun addMarker(lati: Double, longi: Double, marker: Int, titleMarker: String) {
+        latLng = LatLng(lati, longi)
+        val markerOptions = MarkerOptions()
+        markerOptions.position(latLng!!)
+        markerOptions.title(titleMarker)
+        //Setup Marker Driver
+        val bitmap = BitmapFactory.decodeResource(this.resources,marker)
+        val markerDriver = BitmapDescriptorFactory.fromBitmap(bitmap)
+        markerOptions.icon(markerDriver)
+
+        mMap!!.addMarker(markerOptions)
+    }
+
+    override fun setContentDurationAndDistance(duration: String, distance: String) {
+        tv_duration.visibility = View.VISIBLE
+        tv_distance.visibility = View.VISIBLE
+
+        tv_distance?.text = "Jarak : " + distance
+        tv_duration?.text = "Waktu tempuh : " + duration
+    }
+
+
 
     override fun onDestroy() {
         mFirebaseDB.removeListener()
         super.onDestroy()
     }
+
+
+    private fun getURL(from : LatLng, to : LatLng) : String {
+        val origin = "origin=" + from.latitude + "," + from.longitude
+        val dest = "destination=" + to.latitude + "," + to.longitude
+        val sensor = "sensor=false"
+        val params = "$origin&$dest&$sensor"
+        return "https://maps.googleapis.com/maps/api/directions/json?$params"
+    }
+
+    /**
+     * Method to decode polyline points
+     * Courtesy : https://jeffreysambells.com/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java
+     */
+    private fun decodePoly(encoded: String): List<LatLng> {
+        val poly = ArrayList<LatLng>()
+        var index = 0
+        val len = encoded.length
+        var lat = 0
+        var lng = 0
+
+        while (index < len) {
+            var b: Int
+            var shift = 0
+            var result = 0
+            do {
+                b = encoded[index++].toInt() - 63
+                result = result or (b and 0x1f shl shift)
+                shift += 5
+            } while (b >= 0x20)
+            val dlat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
+            lat += dlat
+
+            shift = 0
+            result = 0
+            do {
+                b = encoded[index++].toInt() - 63
+                result = result or (b and 0x1f shl shift)
+                shift += 5
+            } while (b >= 0x20)
+            val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
+            lng += dlng
+
+            val p = LatLng(lat.toDouble() / 1E5,
+                    lng.toDouble() / 1E5)
+            poly.add(p)
+        }
+
+        return poly
+    }
+
 
 }
