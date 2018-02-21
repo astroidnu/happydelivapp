@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">HappyDelivApp</string>
     <string name="google_maps_api_key">AIzaSyApv_RaL_j3NnycJzEhQIgQ3XdhQ1awKhU</string>
+    <string name="sms_official_sender">MDMedia</string>
 </resources>
