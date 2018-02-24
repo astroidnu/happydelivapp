@@ -24,7 +24,8 @@
 
         <activity
             android:label="Detail Package Page"
-            android:name=".ui.activity.detailpackage.DetailPackageActivity"/>
+            android:name=".ui.activity.detailpackage.DetailPackageActivity"
+            android:exported="true"/>
 
         <activity
             android:label="Otp Page"

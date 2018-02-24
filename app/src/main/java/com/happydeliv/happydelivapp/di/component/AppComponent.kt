@@ -6,6 +6,7 @@ import com.happydeliv.happydelivapp.di.module.AppModule
 import com.happydeliv.happydelivapp.di.module.NetworkModule
 import com.happydeliv.happydelivapp.di.module.builder.CommonActivityBuilder
 import com.happydeliv.happydelivapp.receiver.SMSReceiver
+import com.happydeliv.happydelivapp.services.MyFirebaseMessagingService
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -37,4 +38,5 @@ interface AppComponent {
 
     //SMS Receiver
     fun inject(smsReceiver: SMSReceiver)
+    fun inject(myFirebaseMessagingService: MyFirebaseMessagingService)
 }

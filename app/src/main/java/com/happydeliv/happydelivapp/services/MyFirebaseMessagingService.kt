@@ -12,8 +12,11 @@ import android.support.v4.app.NotificationCompat
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.happydeliv.happydelivapp.HappyDelivApp
 import com.happydeliv.happydelivapp.R
+import com.happydeliv.happydelivapp.session.LoginSession
 import com.happydeliv.happydelivapp.ui.activity.detailpackage.DetailPackageActivity
+import javax.inject.Inject
 
 
 /**
@@ -25,11 +28,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private val TAG = "MyFirebaseMsgService"
     private var mTrackId : String? = null
+
+    @Inject
+    lateinit var mLoginSession : LoginSession
+
     /**
      * Called when message is received.
      *
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
+
+    init {
+        HappyDelivApp.appComponent.inject(this)
+    }
     // [START receive_message]
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         Log.d(TAG, "From: " + remoteMessage.from!!)
@@ -55,6 +66,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
      */
     @SuppressLint("NewApi")
     private fun sendNotification(messageBody: String) {
+
         val intent = Intent(this, DetailPackageActivity::class.java)
         intent.putExtra("data", mTrackId)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -63,7 +75,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, "Happy deliv channel")
-                .setSmallIcon(R.drawable.ic_add)
+                .setSmallIcon(R.mipmap.ic_icon_app)
                 .setContentTitle("Happy Delivery App")
                 .setContentText(messageBody)
                 .setAutoCancel(true)

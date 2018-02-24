@@ -18,6 +18,7 @@ class LoginSession {
     private val PREF_PHONE = "phone"
     private val PREF_TOKEN_ID = "token_id"
     private val PREF_FIREBASE_TOKEN = "firebase_token"
+    private val PREF_FROM_PUSH_NOTIF = "from_push_notif"
 
     var pref = Pref()
 
@@ -76,6 +77,14 @@ class LoginSession {
 
     fun savePhoneNumber(phone: String) {
         pref._setString(PREF_PHONE, phone)
+    }
+
+    fun isFromPushNotif(): Boolean {
+        return pref._getBoolean(PREF_FROM_PUSH_NOTIF, false)
+    }
+
+    fun setFromPushNotif(boolean: Boolean) {
+        pref._setBoolean(PREF_FROM_PUSH_NOTIF, boolean)
     }
 
 
