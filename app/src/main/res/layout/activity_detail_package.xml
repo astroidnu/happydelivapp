@@ -124,16 +124,26 @@
                             android:text="10 Km"/>
                     </LinearLayout>
                 </LinearLayout>
+                <View
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_width="match_parent"
+                    android:background="@color/colorLightGrey"
+                    android:layout_height="1dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <ImageButton
+                        android:padding="8dp"
+                        android:background="@android:color/transparent"
                         android:id="@+id/btn_phone_driver"
                         android:layout_weight="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_phone_24dp"/>
                     <ImageButton
+                        android:padding="8dp"
+                        android:background="@android:color/transparent"
                         android:id="@+id/btn_message_driver"
                         android:layout_weight="1"
                         android:layout_width="wrap_content"

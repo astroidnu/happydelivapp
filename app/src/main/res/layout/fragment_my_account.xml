@@ -26,7 +26,7 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ibnu Muzzakkir"/>
+        android:text="-"/>
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,14 +71,14 @@
                     android:fontFamily="sans-serif"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="ibnumuzzaakkir@gmail.com"/>
+                    android:text="-"/>
                 <TextView
                     android:id="@+id/tv_profile_phone"
                     android:layout_marginTop="8dp"
                     android:textSize="14sp"
                     android:fontFamily="sans-serif"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:text="+6285697866041"/>
+                    android:text="-"/>
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>

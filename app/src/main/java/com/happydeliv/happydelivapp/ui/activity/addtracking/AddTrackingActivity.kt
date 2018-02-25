@@ -65,6 +65,8 @@ class AddTrackingActivity : BaseActivity(), AddTrackingContract.View{
             val mTrackingId = et_add_tracking_id.text.toString()
             mAddTrackingPresenter.addTrackingPackage(mTrackingId)
         }
+
+        imgbtn_back.setOnClickListener { onBackPressed() }
     }
 
     override fun navigateToHome() {
